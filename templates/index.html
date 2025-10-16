@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prelude Golden Christmas 2025</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+  <main>
+    <h1>Prelude</h1>
+    <h2>Golden Christmas 2025</h2>
+
+    <p class="desc">
+      As últimas edições reuniram 1.500 pessoas.<br>
+      Este ano, voltamos ao formato original: uma noite para 600.
+    </p>
+
+    <form action="/verificar" method="post">
+      <input 
+        type="email" 
+        name="email" 
+        placeholder="Digite seu e-mail" 
+        required>
+      <input 
+        type="text" 
+        name="whatsapp" 
+        placeholder="Digite seu WhatsApp">
+      <button type="submit">Verificar acesso</button>
+    </form>
+
+    {% if mensagem %}
+    <div class="mensagem">
+      <pre>{{ mensagem }}</pre>
+    </div>
+    {% endif %}
+  </main>
+</body>
+</html>
