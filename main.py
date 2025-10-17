@@ -45,29 +45,30 @@ def home(request: Request):
 
 
 @app.post("/verificar", response_class=HTMLResponse)
-def verificar(request: Request, email: str = Form(""), whatsapp: str = Form("")):
+def verificar_status(email, whatsapp):
+    """Modo de teste rápido — reconhecimento manual com listas fixas."""
     email = email.lower().strip()
-    whatsapp = whatsapp.strip().replace("+55", "").replace(" ", "").replace("-", "")
 
-    data = {
-        "email": email,
-        "whatsapp": whatsapp,
-        "status": "Restrito",
-        "timestamp": datetime.utcnow().isoformat(),
-    }
+    founders = [
+        "fredwn@gmail.com",
+        "tiago78@gmail.com",
+        "camendoncaa@gmail.com",
+    ]
 
-    # --- Tenta enviar para Supabase ---
-    try:
-        res = requests.post(
-            f"{SUPABASE_URL}/rest/v1/{SUPABASE_TABLE}",
-            headers=headers,
-            json=data,
-            timeout=5
-        )
-        if res.status_code not in [200, 201]:
-            print(f"❌ Erro ao enviar para Supabase: {res.status_code} -> {res.text}")
-    except Exception as e:
-        print(f"❌ Erro Supabase: {e}")
+    guests = [
+        "fred@studioweissmann.com.br",
+        "tiago@oficinapar.com.br",
+        "tiago@tiagofreire.arq.br",
+        "eucamendonca@gmail.com",
+    ]
+
+    if email in founders:
+        return "Founder"
+    elif email in guests:
+        return "Guest"
+    else:
+        return "Restrito"
+
 
     # --- Salva backup local ---
     salvar_backup_local(data)
