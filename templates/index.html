@@ -1,40 +1,101 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Prelude Golden Christmas 2025</title>
   <link rel="stylesheet" href="/static/style.css">
+  <style>
+    body {
+      background-color: #0c0c0c;
+      color: #f7f7f7;
+      font-family: 'Helvetica Neue', sans-serif;
+      text-align: center;
+      padding: 40px 20px;
+    }
+    h1 { font-size: 2rem; font-weight: 600; margin-bottom: 0; color: #f0c06d; }
+    p  { line-height: 1.5; font-size: 1rem; }
+    input {
+      width: 80%;
+      max-width: 320px;
+      padding: 10px;
+      margin: 6px auto;
+      border: 1px solid #444;
+      background: #111;
+      color: #fff;
+      border-radius: 6px;
+      display: block;
+    }
+    button {
+      background-color: #f0c06d;
+      border: none;
+      padding: 12px 30px;
+      margin-top: 10px;
+      color: #000;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover { opacity: 0.9; }
+    a.whatsapp-btn {
+      display: inline-block;
+      background-color: #25D366;
+      color: white;
+      padding: 12px 24px;
+      margin-top: 20px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .optout {
+      margin-top: 15px;
+      font-size: 0.9rem;
+      color: #999;
+    }
+    .optout a {
+      color: #666;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+    .mensagem {
+      margin-top: 40px;
+      font-size: 1.1rem;
+      white-space: pre-line;
+    }
+  </style>
 </head>
-
 <body>
-  <main>
-    <h1>Prelude</h1>
-    <h2>Golden Christmas 2025</h2>
+  <h1>Prelude</h1>
+  <p><strong>Golden Christmas 2025</strong></p>
+  <p>As últimas edições reuniram 1.500 pessoas.<br>
+  Este ano, voltamos ao formato original: uma noite para 600.</p>
 
-    <p class="desc">
-      As últimas edições reuniram 1.500 pessoas.<br>
-      Este ano, voltamos ao formato original: uma noite para 600.
-    </p>
-
-    <form action="/verificar" method="post">
-      <input 
-        type="email" 
-        name="email" 
-        placeholder="Digite seu e-mail" 
-        required>
-      <input 
-        type="text" 
-        name="whatsapp" 
-        placeholder="Digite seu WhatsApp">
+  <div id="formulario">
+    <form method="post" action="/verificar" id="verificacaoForm">
+      <input type="email" name="email" placeholder="E-mail" required>
+      <input type="text" name="whatsapp" placeholder="WhatsApp">
       <button type="submit">Verificar acesso</button>
     </form>
 
-    {% if mensagem %}
-    <div class="mensagem">
-      <pre>{{ mensagem }}</pre>
+    <div class="optout">
+      Se preferir não deixar seus dados, eles não serão registrados.<br>
+      Lembre-se: não temos mais o contato de algumas pessoas queridas que deveriam estar nessa lista.<br>
+      <a href="/optout">❌ Não quero deixar meus dados</a>
     </div>
+  </div>
+
+  <div id="mensagem" class="mensagem">
+    {% if mensagem %}
+      {{ mensagem|safe }}
     {% endif %}
-  </main>
+  </div>
+
+  <script>
+    // Oculta o formulário após verificação
+    const form = document.getElementById('verificacaoForm');
+    form.addEventListener('submit', () => {
+      document.getElementById('formulario').style.display = 'none';
+    });
+  </script>
 </body>
 </html>

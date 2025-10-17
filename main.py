@@ -2,131 +2,122 @@ from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from datetime import datetime
 import pandas as pd
 import os
 import requests
-from datetime import datetime
 
-# --------------------------------------------------------
-# 🔐 Configurações de integração com Supabase
-# --------------------------------------------------------
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
-
-# --------------------------------------------------------
-# ⚙️ Inicialização do app e diretórios
-# --------------------------------------------------------
 app = FastAPI()
+
+# --- Configuração de diretórios ---
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
+# --- Configuração Supabase ---
+SUPABASE_URL = os.getenv("SUPABASE_URL", "https://vcorazrqkpuacpaverbl.supabase.co")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZjb3JhenJxa3B1YWNwYXZlcmJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2MjgzODAsImV4cCI6MjA3NjIwNDM4MH0.Ql1swf-RE97yA8ntxjt-KyBxEcpikpcowD_tDAeGoqA")  # substitua pela sua
+SUPABASE_TABLE = "cadastros"
+
+headers = {
+    "apikey": SUPABASE_KEY,
+    "Authorization": f"Bearer {SUPABASE_KEY}",
+    "Content-Type": "application/json",
+}
+
+# --- Backup local (garantia) ---
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_PATH = os.path.join(BASE_DIR, "database.csv")
+DB_PATH = os.path.join(BASE_DIR, "backup_database.csv")
 
-# --------------------------------------------------------
-# 📂 Funções auxiliares
-# --------------------------------------------------------
-def carregar_dados():
-    """Carrega o CSV local, se existir, e normaliza campos"""
-    if os.path.exists(DB_PATH):
-        df = pd.read_csv(DB_PATH)
-        df["email"] = df["email"].astype(str).str.lower().str.strip()
-        df["whatsapp"] = df["whatsapp"].astype(str).str.strip()
-        return df
+def salvar_backup_local(novo_registro):
+    """Garante backup local de todos os cadastros."""
+    if not os.path.exists(DB_PATH):
+        df = pd.DataFrame(columns=["email", "whatsapp", "status", "timestamp"])
     else:
-        return pd.DataFrame(columns=["nome", "email", "whatsapp", "status", "convites_disponiveis"])
-
-def salvar_local(dados):
-    """Grava localmente no CSV"""
-    df = carregar_dados()
-    df = pd.concat([df, pd.DataFrame([dados])], ignore_index=True)
+        df = pd.read_csv(DB_PATH)
+    df = pd.concat([df, pd.DataFrame([novo_registro])], ignore_index=True)
     df.to_csv(DB_PATH, index=False)
 
-def salvar_supabase(dados):
-    """Envia o registro também para o Supabase"""
-    if not SUPABASE_URL or not SUPABASE_KEY:
-        print("⚠️ SUPABASE_URL ou SUPABASE_KEY não configurados. Pulando upload.")
-        return
-    try:
-        url = f"{SUPABASE_URL}/rest/v1/cadastros"
-        headers = {
-            "apikey": SUPABASE_KEY,
-            "Authorization": f"Bearer {SUPABASE_KEY}",
-            "Content-Type": "application/json"
-        }
-        r = requests.post(url, headers=headers, json=dados)
-        print(f"📤 Supabase -> {r.status_code}: {r.text}")
-    except Exception as e:
-        print("❌ Erro ao enviar para Supabase:", e)
 
-# --------------------------------------------------------
-# 🏠 Rotas
-# --------------------------------------------------------
+# --- Rotas ---
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
-    """Renderiza a landing page inicial"""
     return templates.TemplateResponse("index.html", {"request": request})
+
 
 @app.post("/verificar", response_class=HTMLResponse)
 def verificar(request: Request, email: str = Form(""), whatsapp: str = Form("")):
-    """Verifica status do email/whatsapp e salva se novo"""
-    df = carregar_dados()
     email = email.lower().strip()
-    whatsapp = whatsapp.strip()
+    whatsapp = whatsapp.strip().replace("+55", "").replace(" ", "").replace("-", "")
 
-    row = df[(df["email"] == email) | (df["whatsapp"] == whatsapp)]
+    data = {
+        "email": email,
+        "whatsapp": whatsapp,
+        "status": "Restrito",
+        "timestamp": datetime.utcnow().isoformat(),
+    }
 
-    # Caso novo cadastro (não encontrado)
-    if row.empty:
-        novo = {
-            "nome": "",
-            "email": email,
-            "whatsapp": whatsapp,
-            "status": "Restrito",
-            "convites_disponiveis": 0,
-            "created_at": datetime.utcnow().isoformat()
-        }
-        salvar_local(novo)
-        salvar_supabase(novo)
+    # --- Tenta enviar para Supabase ---
+    try:
+        res = requests.post(
+            f"{SUPABASE_URL}/rest/v1/{SUPABASE_TABLE}",
+            headers=headers,
+            json=data,
+            timeout=5
+        )
+        if res.status_code not in [200, 201]:
+            print(f"❌ Erro ao enviar para Supabase: {res.status_code} -> {res.text}")
+    except Exception as e:
+        print(f"❌ Erro Supabase: {e}")
 
+    # --- Salva backup local ---
+    salvar_backup_local(data)
+
+    # --- Define mensagens conforme status ---
+    status = verificar_status(email, whatsapp)
+
+    if status == "Founder":
+        mensagem = (
+            "✅ Seu nome foi reconhecido.\n"
+            "Acesso garantido ao nosso Natal — Golden Christmas.\n"
+            "O código e as instruções serão enviados por e-mail.\n"
+            "📅 Save the Date: 20 de Dezembro de 2025 — 20h\n"
+            "Pela primeira vez, em um salão lendário.\n\n"
+            '<a href="https://wa.me/5521976954450?text=Oi%20Fred!%20Sou%20Founder%20da%20Prelude%20Golden%20Christmas%20e%20quero%20indicar%20meus%20amigos." class="whatsapp-btn">Enviar mensagem pelo WhatsApp</a>'
+        )
+    elif status == "Guest":
+        mensagem = (
+            "✅ Seu nome está confirmado.\n"
+            "Convite nominal válido para você e seu acompanhante.\n"
+            "📅 Save the Date: 20 de Dezembro de 2025 — 20h\n"
+            "Pela primeira vez, em um salão lendário.\n\n"
+            '<a href="https://wa.me/5521976954450?text=Oi%20Fred!%20Sou%20Guest%20da%20Prelude%20Golden%20Christmas%20e%20quero%20confirmar%20meu%20acompanhante." class="whatsapp-btn">Enviar mensagem pelo WhatsApp</a>'
+        )
+    else:
         mensagem = (
             "⚪ No momento, os convites estão restritos.\n"
             "Caso um convidado o indique, você será notificado.\n"
             "Nenhuma venda pública será aberta.\n"
-            "Agradecemos por deixar o seu nome."
+            '<div class="optout"><a href="/optout">❌ Remover meus dados</a></div>'
         )
-    else:
-        convidado = row.iloc[0]
-        nome = convidado["nome"]
-        status = convidado["status"]
-
-        if status == "Founder":
-            mensagem = (
-                f"✅ {nome}, você é Founder.\n"
-                "O código e as instruções serão enviados pessoalmente por WhatsApp.\n"
-                "Você pode indicar até 6 convidados."
-            )
-        elif status == "Guest":
-            mensagem = (
-                f"✅ {nome}, seu nome está confirmado.\n"
-                "Convite nominal válido para você e seu acompanhante.\n"
-                "Detalhes serão enviados por WhatsApp."
-            )
-        else:
-            mensagem = (
-                f"⚪ {nome}, os convites estão restritos.\n"
-                "Caso um convidado o indique, você será notificado."
-            )
 
     return templates.TemplateResponse("index.html", {"request": request, "mensagem": mensagem})
 
-# --------------------------------------------------------
-# 🔍 Endpoint opcional para administração (ver últimos cadastros)
-# --------------------------------------------------------
-@app.get("/admin/db")
-def listar_registros():
-    df = carregar_dados()
-    return {
-        "total_local": len(df),
-        "amostra_local": df.tail(10).to_dict(orient="records")
-    }
+
+def verificar_status(email, whatsapp):
+    """Simulação local de status (teste de UX)."""
+    if email.endswith("@founder.com"):
+        return "Founder"
+    elif email.endswith("@guest.com"):
+        return "Guest"
+    else:
+        return "Restrito"
+
+
+@app.get("/optout", response_class=HTMLResponse)
+def optout(request: Request):
+    mensagem = (
+        "Entendido. Nenhuma informação foi registrada.\n"
+        "A Prelude agradece o interesse — talvez em outra edição.\n"
+        "✨ Obrigado."
+    )
+    return templates.TemplateResponse("index.html", {"request": request, "mensagem": mensagem})
