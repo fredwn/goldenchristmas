@@ -1,18 +1,23 @@
 /* ===== PRELUDE GOLDEN CHRISTMAS 2025 ===== */
-/* Design refinado para desktop e mobile */
+/* Estilo refinado, discreto e legível */
 
 :root {
   --gold: #f0c06d;
   --black: #0c0c0c;
   --white: #f7f7f7;
+  --gray-light: #d0d0d0;
   --gray: #999;
-  --accent: #25D366; /* WhatsApp green */
+  --gray-dark: #666;
+  --accent: #25D366;
+  --font-main: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 body {
   background-color: var(--black);
   color: var(--white);
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: var(--font-main);
+  font-size: 0.9rem;
+  line-height: 1.6;
   text-align: center;
   margin: 0;
   padding: 40px 20px;
@@ -24,18 +29,29 @@ body {
 
 /* ---------- Headings ---------- */
 h1 {
-  font-size: clamp(2rem, 5vw, 2.8rem);
+  font-size: 1.8rem;
   font-weight: 600;
   color: var(--gold);
-  margin-bottom: 0.3em;
+  margin-bottom: 0.1em;
+  letter-spacing: 0.3px;
 }
 
 p {
-  line-height: 1.6;
-  font-size: clamp(1rem, 2.5vw, 1.1rem);
-  margin-top: 0;
-  margin-bottom: 1em;
-  color: var(--white);
+  color: var(--gray-light);
+  margin: 0.5em 0 1em 0;
+  max-width: 420px;
+}
+
+/* ---------- Subtextos e avisos ---------- */
+.notice {
+  font-size: 0.88rem;
+  color: var(--gray-light);
+  line-height: 1.5;
+}
+
+.notice-small {
+  font-size: 0.8rem;
+  color: var(--gray);
 }
 
 /* ---------- Form ---------- */
@@ -50,13 +66,13 @@ form {
 
 input {
   width: 100%;
-  padding: 14px;
+  padding: 12px;
   margin: 8px 0;
   border: 1px solid #333;
   background: #111;
   color: var(--white);
   border-radius: 6px;
-  font-size: 1rem;
+  font-size: 0.9rem;
   transition: border 0.3s ease;
 }
 
@@ -70,10 +86,10 @@ button {
   background-color: var(--gold);
   border: none;
   color: var(--black);
-  padding: 14px 30px;
+  padding: 12px 28px;
   border-radius: 6px;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 0.9rem;
   cursor: pointer;
   margin-top: 10px;
   transition: opacity 0.3s ease, transform 0.2s ease;
@@ -88,12 +104,12 @@ a.whatsapp-btn {
   display: inline-block;
   background-color: var(--accent);
   color: white;
-  padding: 14px 28px;
-  margin-top: 24px;
+  padding: 12px 26px;
+  margin-top: 22px;
   border-radius: 8px;
   text-decoration: none;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 0.9rem;
   transition: opacity 0.3s ease, transform 0.2s ease;
 }
 
@@ -102,50 +118,47 @@ a.whatsapp-btn:hover {
   transform: scale(1.02);
 }
 
-/* ---------- Opt-out ---------- */
+/* ---------- Opt-out, rodapés e links ---------- */
 .optout {
-  margin-top: 15px;
-  font-size: 0.95rem;
+  margin-top: 16px;
+  font-size: 0.8rem;
   color: var(--gray);
-  line-height: 1.5;
-  max-width: 320px;
+  line-height: 1.4;
 }
 
 .optout a {
-  color: #666;
+  color: var(--gray);
   text-decoration: underline;
   cursor: pointer;
-  display: inline-block;
-  margin-top: 6px;
 }
 
-/* ---------- Mensagem ---------- */
+.optout a:hover {
+  color: var(--gray-light);
+}
+
 .mensagem {
-  margin-top: 40px;
-  font-size: 1.1rem;
+  margin-top: 36px;
+  font-size: 0.95rem;
+  color: var(--gray-light);
   white-space: pre-line;
   max-width: 400px;
-  line-height: 1.6;
 }
 
 /* ---------- Responsividade ---------- */
 @media (max-width: 480px) {
   body {
     padding: 30px 14px;
+    font-size: 0.85rem;
   }
-
-  input {
-    padding: 12px;
-    font-size: 0.95rem;
+  h1 {
+    font-size: 1.5rem;
   }
-
   button, a.whatsapp-btn {
-    padding: 12px 20px;
-    font-size: 0.95rem;
+    padding: 10px 20px;
+    font-size: 0.85rem;
   }
-
-  .mensagem {
-    font-size: 1rem;
-    margin-top: 30px;
+  input {
+    font-size: 0.85rem;
+    padding: 10px;
   }
 }
