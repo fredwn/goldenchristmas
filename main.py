@@ -1,30 +1,35 @@
+# ===============================
+# PRELUDE GOLDEN CHRISTMAS 2025
+# main.py — versão refinada
+# ===============================
+
 from fastapi import FastAPI, Request, Form
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from datetime import datetime
 import pandas as pd
 import os
+import re
 import requests
 
+# --- CONFIGURAÇÕES INICIAIS ---
 app = FastAPI()
-
-# --- Configuração de diretórios ---
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
-# --- Configuração Supabase ---
+# --- SUPABASE ---
 SUPABASE_URL = os.getenv("SUPABASE_URL", "https://vcorazrqkpuacpaverbl.supabase.co")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZjb3JhenJxa3B1YWNwYXZlcmJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2MjgzODAsImV4cCI6MjA3NjIwNDM4MH0.Ql1swf-RE97yA8ntxjt-KyBxEcpikpcowD_tDAeGoqA")  # substitua pela sua
+SUPABASE_KEY = os.getenv("SUPABASE_KEY", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZjb3JhenJxa3B1YWNwYXZlcmJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2MjgzODAsImV4cCI6MjA3NjIwNDM4MH0.Ql1swf-RE97yA8ntxjt-KyBxEcpikpcowD_tDAeGoqA")
 SUPABASE_TABLE = "cadastros"
 
-headers = {
+HEADERS = {
     "apikey": SUPABASE_KEY,
     "Authorization": f"Bearer {SUPABASE_KEY}",
     "Content-Type": "application/json",
 }
 
-# --- Backup local (garantia) ---
+# --- BACKUP LOCAL ---
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "backup_database.csv")
 
@@ -34,27 +39,37 @@ def salvar_backup_local(novo_registro):
         df = pd.DataFrame(columns=["email", "whatsapp", "status", "timestamp"])
     else:
         df = pd.read_csv(DB_PATH)
+
     df = pd.concat([df, pd.DataFrame([novo_registro])], ignore_index=True)
     df.to_csv(DB_PATH, index=False)
 
+# --- FUNÇÃO PRINCIPAL DE STATUS ---
+def get_status(email: str, whatsapp: str):
+    """Verifica o status da pessoa (Founder, Guest, Restrito)."""
 
-# --- Rotas ---
-@app.get("/", response_class=HTMLResponse)
-def home(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
-
-
-@app.post("/verificar", response_class=HTMLResponse)
-def verificar_status(email, whatsapp):
-    """Modo de teste rápido — reconhecimento manual com listas fixas."""
+    # Normaliza dados
     email = email.lower().strip()
+    whatsapp = re.sub(r"^(\+55|55|5521|21)", "", whatsapp or "").strip()
 
+    # 1. Busca no Supabase
+    try:
+        r = requests.get(
+            f"{SUPABASE_URL}/rest/v1/{SUPABASE_TABLE}?email=eq.{email}&select=status",
+            headers=HEADERS,
+        )
+        if r.ok and r.json():
+            status = r.json()[0].get("status")
+            if status in ["Founder", "Guest"]:
+                return status
+    except Exception as e:
+        print("Erro Supabase:", e)
+
+    # 2. Fallback local
     founders = [
         "fredwn@gmail.com",
         "tiago78@gmail.com",
         "camendoncaa@gmail.com",
     ]
-
     guests = [
         "fred@studioweissmann.com.br",
         "tiago@oficinapar.com.br",
@@ -69,49 +84,51 @@ def verificar_status(email, whatsapp):
     else:
         return "Restrito"
 
+# --- ROTAS ---
+@app.get("/", response_class=HTMLResponse)
+def home(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
 
-    # --- Salva backup local ---
-    salvar_backup_local(data)
 
-    # --- Define mensagens conforme status ---
-    status = verificar_status(email, whatsapp)
+@app.post("/verificar", response_class=HTMLResponse)
+async def verificar(request: Request, email: str = Form(...), whatsapp: str = Form("")):
+    """Processa a verificação de status e redireciona para página correspondente."""
 
+    email = email.lower().strip()
+    whatsapp = re.sub(r"^(\+55|55|5521|21)", "", whatsapp or "").strip()
+
+    status = get_status(email, whatsapp)
+
+    # Salva backup local
+    salvar_backup_local({
+        "email": email,
+        "whatsapp": whatsapp,
+        "status": status,
+        "timestamp": datetime.now().isoformat(),
+    })
+
+    # Redireciona para página específica
     if status == "Founder":
-        mensagem = (
-            "✅ Seu nome foi reconhecido.\n"
-            "Acesso garantido ao nosso Natal — Golden Christmas.\n"
-            "O código e as instruções serão enviados por e-mail.\n"
-            "📅 Save the Date: 20 de Dezembro de 2025 — 20h\n"
-            "Pela primeira vez, em um salão lendário.\n\n"
-            '<a href="https://wa.me/5521976954450?text=Oi%20Fred!%20Sou%20Founder%20da%20Prelude%20Golden%20Christmas%20e%20quero%20indicar%20meus%20amigos." class="whatsapp-btn">Enviar mensagem pelo WhatsApp</a>'
-        )
+        return RedirectResponse(url="/founder", status_code=303)
     elif status == "Guest":
-        mensagem = (
-            "✅ Seu nome está confirmado.\n"
-            "Convite nominal válido para você e seu acompanhante.\n"
-            "📅 Save the Date: 20 de Dezembro de 2025 — 20h\n"
-            "Pela primeira vez, em um salão lendário.\n\n"
-            '<a href="https://wa.me/5521976954450?text=Oi%20Fred!%20Sou%20Guest%20da%20Prelude%20Golden%20Christmas%20e%20quero%20confirmar%20meu%20acompanhante." class="whatsapp-btn">Enviar mensagem pelo WhatsApp</a>'
-        )
+        return RedirectResponse(url="/guest", status_code=303)
     else:
-        mensagem = (
-            "⚪ No momento, os convites estão restritos.\n"
-            "Caso um convidado o indique, você será notificado.\n"
-            "Nenhuma venda pública será aberta.\n"
-            '<div class="optout"><a href="/optout">❌ Remover meus dados</a></div>'
-        )
-
-    return templates.TemplateResponse("index.html", {"request": request, "mensagem": mensagem})
+        return RedirectResponse(url="/restrito", status_code=303)
 
 
-def verificar_status(email, whatsapp):
-    """Simulação local de status (teste de UX)."""
-    if email.endswith("@founder.com"):
-        return "Founder"
-    elif email.endswith("@guest.com"):
-        return "Guest"
-    else:
-        return "Restrito"
+@app.get("/founder", response_class=HTMLResponse)
+def founder_page(request: Request):
+    return templates.TemplateResponse("founder.html", {"request": request})
+
+
+@app.get("/guest", response_class=HTMLResponse)
+def guest_page(request: Request):
+    return templates.TemplateResponse("guest.html", {"request": request})
+
+
+@app.get("/restrito", response_class=HTMLResponse)
+def restrito_page(request: Request):
+    return templates.TemplateResponse("restrito.html", {"request": request})
 
 
 @app.get("/optout", response_class=HTMLResponse)
@@ -122,3 +139,9 @@ def optout(request: Request):
         "✨ Obrigado."
     )
     return templates.TemplateResponse("index.html", {"request": request, "mensagem": mensagem})
+
+
+# --- TESTE LOCAL ---
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
