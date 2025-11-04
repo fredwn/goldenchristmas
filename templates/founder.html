@@ -3,40 +3,168 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Prelude Golden Christmas 2025 — Founder</title>
+  <title>Prelude Golden Christmas 2025 — Sócio</title>
+
   <link rel="stylesheet" href="/static/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Libre+Baskerville&display=swap" rel="stylesheet">
+
+  <meta name="description" content="Prelude Golden Christmas 2025 — acesso exclusivo para sócios." />
+
+  <style>
+    /* ===========================
+       HERO LAYOUT — LUXURY VERSION
+    ============================ */
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-body);
+      color: var(--white);
+      background-color: #000;
+    }
+
+    .hero-founder {
+      position: relative;
+      height: 100vh;
+      background: url("/static/images/leila-desktop.jpeg") center center / cover no-repeat;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      overflow: hidden;
+    }
+
+    /* gradiente sutil para legibilidade do texto */
+    .hero-founder::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, rgba(0,0,0,0.65) 25%, rgba(0,0,0,0.2) 60%, rgba(0,0,0,0) 100%);
+      z-index: 1;
+    }
+
+    .founder-content {
+      position: relative;
+      z-index: 2;
+      max-width: 600px;
+      padding-left: 10vw;
+    }
+
+    .founder-content h1 {
+      font-family: var(--font-title);
+      color: var(--gold);
+      font-size: clamp(2.8rem, 5vw, 4rem);
+      margin: 0 0 0.2em 0;
+    }
+
+    .founder-content h2 {
+      font-family: var(--font-body);
+      font-size: clamp(1.2rem, 2vw, 1.5rem);
+      color: var(--offwhite);
+      margin: 0 0 2em 0;
+    }
+
+    .founder-content p {
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 1.3em;
+      color: var(--offwhite);
+    }
+
+    .founder-content strong {
+      color: var(--gold-light);
+    }
+
+    .founder-content a {
+      color: var(--gold);
+      text-decoration: underline;
+    }
+
+    .footer-credit {
+      text-align: center;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.6);
+      padding: 10px 0;
+    }
+
+    /* ===========================
+       RESPONSIVO (foto quadrada em cima)
+    ============================ */
+    @media (max-width: 820px) {
+      .hero-founder {
+        flex-direction: column;
+        justify-content: flex-start;
+        height: auto;
+        background: none;
+      }
+
+      .hero-founder::before {
+        display: none;
+      }
+
+      /* imagem mobile agora aparece dentro do .hero-founder e ANTES do texto */
+      .hero-image-mobile {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        background: url("/static/images/leila-mobile.jpeg") center center / cover no-repeat;
+        order: -1; /* faz a imagem aparecer em cima */
+      }
+
+      .founder-content {
+        padding: 8vw 6vw;
+        text-align: center;
+        background-color: #000;
+      }
+
+      .founder-content h1, .founder-content h2 {
+        text-align: center;
+      }
+    }
+  </style>
 </head>
-<body>
-  <h1>Prelude</h1>
-  <p><strong>Golden Christmas 2025</strong></p>
 
-  <p class="notice">
-    Seu nome foi reconhecido como Founder.<br>
-    Você tem acesso garantido e direito a três convites para indicação.
-  </p>
+<body class="page-founder">
+  <section class="hero-founder">
+    <!-- imagem mobile quadrada (só aparece no responsivo) -->
+    <div class="hero-image-mobile"></div>
 
-  <p class="notice">
-    <strong>Save the Date</strong><br>
-    20 de dezembro de 2025 — 20h<br>
-    No cenário mais especial que a Prelude já escolheu.
-  </p>
+    <div class="founder-content">
+      <h1>Prelude</h1>
+      <h2>Golden Christmas 2025</h2>
 
-  <p class="notice">
-    Aguarde o envio, pelo WhatsApp, das informações da festa,<br>
-    dos códigos de acesso e do link de compra.<br>
-    Todas as confirmações serão feitas por esse canal.
-  </p>
+      <p>
+        Seu nome está na lista como <strong>Sócio</strong>.<br />
+        Você tem acesso garantido e direito a indicar <strong>3 amigos</strong>.<br />
+        <span style="font-size:0.95rem;opacity:0.8;">(Favor indicar somente quem fazia parte da lista).</span>
+      </p>
 
-  <p class="notice-small">
-    Para indicar seus convidados, envie uma mensagem para:<br>
-    <a href="https://wa.me/5521976954450?text=Oi%20Fred!%20Sou%20Founder%20da%20Prelude%20Golden%20Christmas%20e%20quero%20indicar%20meus%20amigos."
-       style="color: #bcbcbc; text-decoration: underline;">indicar meus amigos</a>
-  </p>
+      <p>
+        <strong>Save the Date</strong><br />
+        20 de dezembro de 2025 — 20h<br />
+        No cenário mais especial que a Prelude já escolheu.
+      </p>
 
-  <div class="optout">
-    <p style="color: #aaa; font-size: 0.85rem;">
-      Prelude agradece por ser parte da história.
-    </p>
-  </div>
+      <p>
+        As informações serão enviadas pelo WhatsApp,<br />
+        com códigos de acesso e o link de compra.<br />
+        Todas as confirmações serão feitas por esse canal.
+      </p>
+
+      <p>
+        Para indicar seus convidados, envie uma mensagem para:<br />
+        <a href="https://wa.me/5521976954450?text=Oi%20Fred!%20Sou%20sócio%20da%20Prelude%20Golden%20Christmas%20e%20quero%20indicar%20meus%20amigos."
+           target="_blank" rel="noopener noreferrer">
+           indicar meus amigos
+        </a>
+      </p>
+
+      <p>
+        <a href="/" class="link-voltar">Verificar outro nome</a>
+      </p>
+    </div>
+  </section>
+
+  <footer class="footer-credit">
+    Prelude Golden Christmas 2025 • Sócios
+  </footer>
 </body>
 </html>

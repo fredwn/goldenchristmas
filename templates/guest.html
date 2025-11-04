@@ -4,39 +4,168 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Prelude Golden Christmas 2025 — Guest</title>
+
   <link rel="stylesheet" href="/static/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Libre+Baskerville&display=swap" rel="stylesheet">
+
+  <meta name="description" content="Prelude Golden Christmas 2025 — Confirmação de presença como convidado." />
+
+  <style>
+    /* ===========================
+       HERO LAYOUT — LUXURY VERSION
+    ============================ */
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-body);
+      color: var(--white);
+      background-color: #000;
+    }
+
+    .hero-guest {
+      position: relative;
+      height: 100vh;
+      background: url("/static/images/leila-desktop.jpeg") center center / cover no-repeat;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      overflow: hidden;
+    }
+
+    /* gradiente sutil para legibilidade do texto */
+    .hero-guest::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, rgba(0,0,0,0.65) 25%, rgba(0,0,0,0.2) 60%, rgba(0,0,0,0) 100%);
+      z-index: 1;
+    }
+
+    .guest-content {
+      position: relative;
+      z-index: 2;
+      max-width: 600px;
+      padding-left: 10vw;
+    }
+
+    .guest-content h1 {
+      font-family: var(--font-title);
+      color: var(--gold);
+      font-size: clamp(2.8rem, 5vw, 4rem);
+      margin: 0 0 0.2em 0;
+    }
+
+    .guest-content h2 {
+      font-family: var(--font-body);
+      font-size: clamp(1.2rem, 2vw, 1.5rem);
+      color: var(--offwhite);
+      margin: 0 0 2em 0;
+    }
+
+    .guest-content p {
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 1.3em;
+      color: var(--offwhite);
+    }
+
+    .guest-content strong {
+      color: var(--gold-light);
+    }
+
+    .guest-content a {
+      color: var(--gold);
+      text-decoration: underline;
+    }
+
+    .footer-credit {
+      text-align: center;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.6);
+      padding: 10px 0;
+    }
+
+    /* ===========================
+       RESPONSIVO (foto quadrada em cima)
+    ============================ */
+    @media (max-width: 820px) {
+      .hero-guest {
+        flex-direction: column;
+        justify-content: flex-start;
+        height: auto;
+        background: none;
+      }
+
+      .hero-guest::before {
+        display: none;
+      }
+
+      .hero-image-mobile {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        background: url("/static/images/leila-mobile.jpeg") center center / cover no-repeat;
+        order: -1; /* faz a imagem aparecer em cima */
+      }
+
+      .guest-content {
+        padding: 8vw 6vw;
+        text-align: center;
+        background-color: #000;
+      }
+
+      .guest-content h1, .guest-content h2 {
+        text-align: center;
+      }
+    }
+  </style>
 </head>
-<body>
-  <h1>Prelude</h1>
-  <p><strong>Golden Christmas 2025</strong></p>
 
-  <p class="notice">
-    Seu nome está confirmado na lista de convidados.<br>
-    O convite é nominal e válido para você e um acompanhante.
-  </p>
+<body class="page-guest">
+  <section class="hero-guest">
+    <!-- imagem mobile quadrada (só aparece no responsivo) -->
+    <div class="hero-image-mobile"></div>
 
-  <p class="notice">
-    <strong>Save the Date</strong><br>
-    20 de dezembro de 2025 — 20h<br>
-    No cenário mais especial que a Prelude já escolheu.
-  </p>
+    <div class="guest-content">
+      <h1>Prelude</h1>
+      <h2>Golden Christmas 2025</h2>
 
-  <p class="notice">
-    Aguarde o envio, pelo WhatsApp, das informações da festa,<br>
-    dos códigos de acesso e do link de compra.<br>
-    Todas as confirmações serão feitas por esse canal.
-  </p>
+      <p>
+        Seu nome está confirmado na <strong>lista de convidados</strong>.<br />
+        O convite é <strong>nominal</strong> e válido para você e um acompanhante.
+      </p>
 
-  <p class="notice-small">
-    Caso queira indicar alguém, envie uma mensagem para:<br>
-    <a href="https://wa.me/5521976954450?text=Oi%20Fred!%20Sou%20Guest%20da%20Prelude%20Golden%20Christmas%20e%20quero%20indicar%20meus%20amigos."
-       style="color: #bcbcbc; text-decoration: underline;">indicar meus amigos</a>
-  </p>
+      <p>
+        <strong>Save the Date</strong><br />
+        20 de dezembro de 2025 — 20h<br />
+        No cenário mais especial que a Prelude já escolheu.
+      </p>
 
-  <div class="optout">
-    <p style="color: #aaa; font-size: 0.85rem;">
-      Prelude agradece por fazer parte desta edição.
-    </p>
-  </div>
+      <p>
+        Aguarde o envio, pelo WhatsApp, das informações da festa,<br />
+        dos códigos de acesso e do link de compra.<br />
+        Todas as confirmações serão feitas por esse canal.
+      </p>
+
+      <p>
+        Caso queira indicar alguém, envie uma mensagem para:<br />
+        <a
+          href="https://wa.me/5521976954450?text=Oi%20Fred!%20Sou%20Guest%20da%20Prelude%20Golden%20Christmas%20e%20quero%20indicar%20meus%20amigos."
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          indicar meus amigos
+        </a>
+      </p>
+
+      <p>
+        <a href="/" class="link-voltar">Verificar outro nome</a>
+      </p>
+    </div>
+  </section>
+
+  <footer class="footer-credit">
+    Prelude Golden Christmas 2025 • Convidados
+  </footer>
 </body>
 </html>

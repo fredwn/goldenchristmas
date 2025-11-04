@@ -1,0 +1,246 @@
+/* =========================================================
+   Prelude Golden Christmas 2025
+   Luxo atemporal com sofisticação editorial
+========================================================= */
+
+@font-face {
+  font-family: "CopyrightKlimTypeFoundry";
+  src: url("fonts/dd4859ed4bc3e51f1e18d2ace306faeb.woff2") format("woff2"),
+       url("fonts/dd4859ed4bc3e51f1e18d2ace306faeb.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* --------------------- VARIÁVEIS --------------------- */
+:root {
+  --gold: #D4AF37;
+  --gold-light: #E6C56A;
+  --white: #FFFFFF;
+  --offwhite: rgba(255, 255, 255, 0.85);
+  --black: #000000;
+  --font-title: "CopyrightKlimTypeFoundry", "Playfair Display", serif;
+  --font-body: "CopyrightKlimTypeFoundry", "Libre Baskerville", serif;
+  --transition: 0.3s ease;
+}
+
+/* --------------------- RESET --------------------- */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-body);
+  color: var(--white);
+  background-color: var(--black);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  text-decoration: none;
+  color: var(--gold);
+  transition: color var(--transition);
+}
+a:hover {
+  color: var(--gold-light);
+}
+
+/* --------------------- HERO SECTION --------------------- */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 12vw;
+  background: url("images/leila-desktop.jpeg") center center / cover no-repeat;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgba(0,0,0,0.55) 25%, rgba(0,0,0,0.15) 60%, rgba(0,0,0,0) 100%);
+  z-index: 1;
+}
+
+.hero.inner {
+  justify-content: center;
+  padding: 5vw;
+  text-align: center;
+}
+
+/* --------------------- CONTEÚDO --------------------- */
+.content {
+  position: relative;
+  z-index: 2;
+  max-width: 600px;
+}
+
+.title {
+  font-family: var(--font-title);
+  font-size: clamp(2.8rem, 5vw, 4rem);
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+  color: var(--gold);
+}
+
+.subtitle {
+  font-family: var(--font-body);
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+  font-weight: 400;
+  margin: 0 0 1.8em 0;
+  color: var(--offwhite);
+}
+
+.question {
+  font-size: 1.1rem;
+  margin-bottom: 1.4em;
+  opacity: 0.9;
+}
+
+/* --------------------- FORMULÁRIO --------------------- */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+input {
+  width: 100%;
+  max-width: 320px;
+  padding: 12px;
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 4px;
+  background: rgba(255,255,255,0.08);
+  color: var(--white);
+  font-size: 1rem;
+  transition: border-color var(--transition), background var(--transition);
+}
+
+input:focus {
+  border-color: var(--gold);
+  background: rgba(255,255,255,0.12);
+  outline: none;
+}
+
+button {
+  background-color: var(--gold);
+  color: #111;
+  border: none;
+  padding: 12px 34px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  transition: background-color var(--transition), transform 0.2s ease;
+}
+
+button:hover {
+  background-color: var(--gold-light);
+  transform: scale(1.02);
+}
+
+/* --------------------- MENSAGENS E LINKS --------------------- */
+.mensagem-retorno {
+  margin-top: 1.2em;
+  color: var(--gold-light);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.optout {
+  margin-top: 1.6em;
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.6;
+}
+.optout a {
+  color: var(--gold);
+  text-decoration: underline;
+}
+
+/* --------------------- PÁGINAS INTERNAS --------------------- */
+.notice-box {
+  max-width: 600px;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.notice {
+  margin-bottom: 1.6em;
+  line-height: 1.6;
+  color: var(--offwhite);
+}
+
+.notice strong {
+  color: var(--gold-light);
+}
+
+.notice-small {
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.75);
+}
+
+.small {
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.7);
+}
+
+.link-whatsapp,
+.link-voltar {
+  color: var(--gold);
+  text-decoration: underline;
+  display: inline-block;
+  margin-top: 0.5em;
+}
+.link-whatsapp:hover,
+.link-voltar:hover {
+  color: var(--gold-light);
+}
+
+/* --------------------- RODAPÉ --------------------- */
+.footer-credit {
+  font-size: 0.6875em;
+  color: rgba(255,255,255,0.6);
+  text-align: center;
+  margin-top: 40px;
+  padding: 20px 0;
+  line-height: 1.4;
+}
+.footer-credit a {
+  color: rgba(255,255,255,0.7);
+  text-decoration: underline;
+}
+.footer-credit a:hover {
+  color: var(--gold);
+}
+
+/* --------------------- RESPONSIVIDADE --------------------- */
+@media (max-width: 768px) {
+  .hero {
+    justify-content: center;
+    padding: 10vw;
+    background-position: center top;
+  }
+  .content {
+    text-align: center;
+    padding: 0 2vw;
+  }
+  input, button {
+    max-width: 100%;
+  }
+}
+
+@media (min-width: 1400px) {
+  .title {
+    font-size: 4.5rem;
+  }
+  .subtitle {
+    font-size: 1.5rem;
+  }
+}

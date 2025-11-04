@@ -3,29 +3,157 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Prelude Golden Christmas 2025 — Lista restrita</title>
+  <title>Prelude Golden Christmas 2025 — Lista Restrita</title>
+
   <link rel="stylesheet" href="/static/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Libre+Baskerville&display=swap" rel="stylesheet">
+
+  <meta name="description" content="Prelude Golden Christmas 2025 — Lista atualmente restrita a convidados." />
+
+  <style>
+    /* ===========================
+       HERO LAYOUT — LUXURY VERSION
+    ============================ */
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-body);
+      color: var(--white);
+      background-color: #000;
+    }
+
+    .hero-restrito {
+      position: relative;
+      height: 100vh;
+      background: url("/static/images/leila-desktop.jpeg") center center / cover no-repeat;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      overflow: hidden;
+    }
+
+    /* gradiente para contraste do texto */
+    .hero-restrito::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, rgba(0,0,0,0.65) 25%, rgba(0,0,0,0.2) 60%, rgba(0,0,0,0) 100%);
+      z-index: 1;
+    }
+
+    .restrito-content {
+      position: relative;
+      z-index: 2;
+      max-width: 600px;
+      padding-left: 10vw;
+    }
+
+    .restrito-content h1 {
+      font-family: var(--font-title);
+      color: var(--gold);
+      font-size: clamp(2.8rem, 5vw, 4rem);
+      margin: 0 0 0.2em 0;
+    }
+
+    .restrito-content h2 {
+      font-family: var(--font-body);
+      font-size: clamp(1.2rem, 2vw, 1.5rem);
+      color: var(--offwhite);
+      margin: 0 0 2em 0;
+    }
+
+    .restrito-content p {
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 1.3em;
+      color: var(--offwhite);
+    }
+
+    .restrito-content strong {
+      color: var(--gold-light);
+    }
+
+    .restrito-content a {
+      color: var(--gold);
+      text-decoration: underline;
+    }
+
+    .footer-credit {
+      text-align: center;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.6);
+      padding: 10px 0;
+    }
+
+    /* ===========================
+       RESPONSIVO (foto quadrada em cima)
+    ============================ */
+    @media (max-width: 820px) {
+      .hero-restrito {
+        flex-direction: column;
+        justify-content: flex-start;
+        height: auto;
+        background: none;
+      }
+
+      .hero-restrito::before {
+        display: none;
+      }
+
+      .hero-image-mobile {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        background: url("/static/images/leila-mobile.jpeg") center center / cover no-repeat;
+        order: -1; /* coloca a imagem em cima */
+      }
+
+      .restrito-content {
+        padding: 8vw 6vw;
+        text-align: center;
+        background-color: #000;
+      }
+
+      .restrito-content h1, .restrito-content h2 {
+        text-align: center;
+      }
+    }
+  </style>
 </head>
-<body>
-  <h1>Prelude</h1>
-  <p><strong>Golden Christmas 2025</strong></p>
 
-  <p class="notice">
-    No momento, os convites estão restritos a convidados diretos.<br>
-    Caso seja indicado por alguém, você será notificado.
-  </p>
+<body class="page-restrito">
+  <section class="hero-restrito">
+    <!-- imagem mobile quadrada -->
+    <div class="hero-image-mobile"></div>
 
-  <p class="notice-small">
-    Não temos mais o contato de várias pessoas que fizeram parte dessa história.<br>
-    Deixar seu e-mail nos permitirá incluí-lo em futuras ocasiões.
-  </p>
+    <div class="restrito-content">
+      <h1>Prelude</h1>
+      <h2>Golden Christmas 2025</h2>
 
-  <div class="optout">
-    <a href="/optout">Remover meus dados agora</a>
-  </div>
+      <p>
+        No momento, os convites estão <strong>restritos a convidados</strong>.<br />
+        Caso seja indicado por alguém, você será notificado.
+      </p>
 
-  <div class="optout">
-    <a href="/">Verificar outro nome</a>
-  </div>
+      <p>
+        Muitas pessoas que fizeram parte dessa história mudaram de contato.<br />
+        Você pode apagar os seus dados (e-mail e WhatsApp), mas deixá-los registrados
+        nos permitirá incluí-lo em futuras edições.
+      </p>
+
+      <p>
+        <a href="/optout">Remover meus dados agora</a><br />
+        <a href="/" class="link-voltar">Verificar outro nome</a>
+      </p>
+
+      <p style="font-size:0.9rem;opacity:0.8;">
+        Muito obrigado!
+      </p>
+    </div>
+  </section>
+
+  <footer class="footer-credit">
+    Prelude Golden Christmas 2025 • Lista Restrita
+  </footer>
 </body>
 </html>

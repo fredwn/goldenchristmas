@@ -4,38 +4,189 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Prelude Golden Christmas 2025</title>
+
+  <!-- CSS principal -->
   <link rel="stylesheet" href="/static/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Libre+Baskerville&display=swap" rel="stylesheet">
+
+  <meta name="description" content="Prelude Golden Christmas 2025 — descubra se você é sócio ou convidado." />
+
+  <style>
+    /* ===========================
+       HERO LAYOUT — LUXURY LANDING
+    ============================ */
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-body);
+      color: var(--white);
+      background-color: #000;
+    }
+
+    .hero-index {
+      position: relative;
+      height: 100vh;
+      background: url("/static/images/leila-desktop.jpeg") center center / cover no-repeat;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      overflow: hidden;
+    }
+
+    .hero-index::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, rgba(0,0,0,0.65) 25%, rgba(0,0,0,0.2) 60%, rgba(0,0,0,0) 100%);
+      z-index: 1;
+    }
+
+    .index-content {
+      position: relative;
+      z-index: 2;
+      max-width: 480px;
+      padding-left: 10vw;
+    }
+
+    .index-content h1 {
+      font-family: var(--font-title);
+      color: var(--gold);
+      font-size: clamp(2.8rem, 5vw, 4rem);
+      margin: 0 0 0.2em 0;
+    }
+
+    .index-content h2 {
+      font-family: var(--font-body);
+      font-size: clamp(1.2rem, 2vw, 1.5rem);
+      color: var(--offwhite);
+      margin: 0 0 2em 0;
+    }
+
+    .index-content p {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: var(--offwhite);
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      margin-top: 1.5em;
+    }
+
+    input {
+      width: 100%;
+      max-width: 320px;
+      padding: 12px;
+      margin-bottom: 10px;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 4px;
+      background: rgba(255,255,255,0.08);
+      color: var(--white);
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+    }
+
+    input:focus {
+      border-color: var(--gold);
+      outline: none;
+    }
+
+    button {
+      background-color: var(--gold);
+      color: #111;
+      border: none;
+      padding: 12px 34px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      max-width: 320px;
+    }
+
+    button:hover {
+      background-color: var(--gold-light);
+      transform: scale(1.02);
+    }
+
+    .optout {
+      font-size: 0.9rem;
+      opacity: 0.8;
+      margin-top: 1.8em;
+      line-height: 1.4;
+    }
+
+    .footer-credit {
+      text-align: center;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.6);
+      padding: 10px 0;
+    }
+
+    @media (max-width: 820px) {
+      .hero-index {
+        flex-direction: column;
+        justify-content: flex-start;
+        height: auto;
+        background: none;
+      }
+
+      .hero-index::before {
+        display: none;
+      }
+
+      .hero-image-mobile {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        background: url("/static/images/leila-mobile.jpeg") center center / cover no-repeat;
+        order: -1;
+      }
+
+      .index-content {
+        padding: 8vw 6vw;
+        text-align: center;
+        background-color: #000;
+      }
+
+      .index-content h1, .index-content h2 {
+        text-align: center;
+      }
+
+      form, input, button {
+        margin-left: auto;
+        margin-right: auto;
+      }
+    }
+  </style>
 </head>
-<body>
-  <h1>Prelude</h1>
-  <p><strong>Golden Christmas 2025</strong></p>
 
-  <p class="notice">
-    As últimas edições reuniram 1.500 pessoas.<br>
-    Este ano, voltamos à origem: uma noite para 600 convidados.
-  </p>
+<body class="page-index">
+  <section class="hero-index">
+    <!-- imagem mobile quadrada -->
+    <div class="hero-image-mobile"></div>
 
-  <p class="notice">
-    Esta não é uma inscrição, mas uma verificação.<br>
-    Digite seu e-mail e veja se o seu nome está na lista.
-  </p>
+    <div class="index-content">
+      <h1>Prelude</h1>
+      <h2>Golden Christmas 2025</h2>
 
-  <form method="post" action="/verificar">
-    <input type="email" name="email" placeholder="E-mail" required />
-    <input type="text" name="whatsapp" placeholder="WhatsApp (opcional)" />
-    <button type="submit">Verificar nome</button>
-  </form>
+      <p>Você é sócio ou convidado de sócio?</p>
 
-  <div class="optout" style="max-width: 360px;">
-    <p style="font-size: 0.8rem; color: #aaa; line-height: 1.5;">
-      Nenhum dado será salvo sem o seu consentimento.
-    </p>
-  </div>
+      <form method="post" action="/verificar" id="verificacaoForm" novalidate>
+        <input type="email" id="email" name="email" placeholder="E-mail" required />
+        <input type="text" id="whatsapp" name="whatsapp" placeholder="WhatsApp" />
+        <button type="submit">Verificar nome na lista</button>
+      </form>
 
-  <div class="mensagem">
-    {% if mensagem %}
-      {{ mensagem|safe }}
-    {% endif %}
-  </div>
+      <div class="optout">
+        Nenhum dado será salvo sem o seu consentimento.
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer-credit">
+    Prelude Golden Christmas 2025 • Verificação de Convite
+  </footer>
 </body>
 </html>

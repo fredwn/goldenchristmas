@@ -1,164 +1,246 @@
-/* ===== PRELUDE GOLDEN CHRISTMAS 2025 ===== */
-/* Estilo refinado, discreto e legível */
+/* =========================================================
+   Prelude Golden Christmas 2025
+   Luxo atemporal com sofisticação editorial
+========================================================= */
 
+@font-face {
+  font-family: "CopyrightKlimTypeFoundry";
+  src: url("fonts/dd4859ed4bc3e51f1e18d2ace306faeb.woff2") format("woff2"),
+       url("fonts/dd4859ed4bc3e51f1e18d2ace306faeb.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* --------------------- VARIÁVEIS --------------------- */
 :root {
-  --gold: #f0c06d;
-  --black: #0c0c0c;
-  --white: #f7f7f7;
-  --gray-light: #d0d0d0;
-  --gray: #999;
-  --gray-dark: #666;
-  --accent: #25D366;
-  --font-main: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --gold: #D4AF37;
+  --gold-light: #E6C56A;
+  --white: #FFFFFF;
+  --offwhite: rgba(255, 255, 255, 0.85);
+  --black: #000000;
+  --font-title: "CopyrightKlimTypeFoundry", "Playfair Display", serif;
+  --font-body: "CopyrightKlimTypeFoundry", "Libre Baskerville", serif;
+  --transition: 0.3s ease;
+}
+
+/* --------------------- RESET --------------------- */
+* {
+  box-sizing: border-box;
 }
 
 body {
-  background-color: var(--black);
-  color: var(--white);
-  font-family: var(--font-main);
-  font-size: 0.9rem;
-  line-height: 1.6;
-  text-align: center;
   margin: 0;
-  padding: 40px 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
+  padding: 0;
+  font-family: var(--font-body);
+  color: var(--white);
+  background-color: var(--black);
+  -webkit-font-smoothing: antialiased;
 }
 
-/* ---------- Headings ---------- */
-h1 {
-  font-size: 1.8rem;
-  font-weight: 600;
+a {
+  text-decoration: none;
   color: var(--gold);
-  margin-bottom: 0.1em;
-  letter-spacing: 0.3px;
+  transition: color var(--transition);
+}
+a:hover {
+  color: var(--gold-light);
 }
 
-p {
-  color: var(--gray-light);
-  margin: 0.5em 0 1em 0;
-  max-width: 420px;
+/* --------------------- HERO SECTION --------------------- */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 12vw;
+  background: url("images/leila-desktop.jpeg") center center / cover no-repeat;
 }
 
-/* ---------- Subtextos e avisos ---------- */
-.notice {
-  font-size: 0.88rem;
-  color: var(--gray-light);
-  line-height: 1.5;
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgba(0,0,0,0.55) 25%, rgba(0,0,0,0.15) 60%, rgba(0,0,0,0) 100%);
+  z-index: 1;
 }
 
-.notice-small {
-  font-size: 0.8rem;
-  color: var(--gray);
+.hero.inner {
+  justify-content: center;
+  padding: 5vw;
+  text-align: center;
 }
 
-/* ---------- Form ---------- */
+/* --------------------- CONTEÚDO --------------------- */
+.content {
+  position: relative;
+  z-index: 2;
+  max-width: 600px;
+}
+
+.title {
+  font-family: var(--font-title);
+  font-size: clamp(2.8rem, 5vw, 4rem);
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+  color: var(--gold);
+}
+
+.subtitle {
+  font-family: var(--font-body);
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+  font-weight: 400;
+  margin: 0 0 1.8em 0;
+  color: var(--offwhite);
+}
+
+.question {
+  font-size: 1.1rem;
+  margin-bottom: 1.4em;
+  opacity: 0.9;
+}
+
+/* --------------------- FORMULÁRIO --------------------- */
 form {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  width: 100%;
-  max-width: 360px;
-  margin: 20px auto 10px auto;
+  gap: 10px;
 }
 
 input {
   width: 100%;
+  max-width: 320px;
   padding: 12px;
-  margin: 8px 0;
-  border: 1px solid #333;
-  background: #111;
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 4px;
+  background: rgba(255,255,255,0.08);
   color: var(--white);
-  border-radius: 6px;
-  font-size: 0.9rem;
-  transition: border 0.3s ease;
+  font-size: 1rem;
+  transition: border-color var(--transition), background var(--transition);
 }
 
 input:focus {
   border-color: var(--gold);
+  background: rgba(255,255,255,0.12);
   outline: none;
 }
 
-/* ---------- Buttons ---------- */
 button {
   background-color: var(--gold);
+  color: #111;
   border: none;
-  color: var(--black);
-  padding: 12px 28px;
-  border-radius: 6px;
-  font-weight: 600;
-  font-size: 0.9rem;
+  padding: 12px 34px;
+  border-radius: 4px;
   cursor: pointer;
-  margin-top: 10px;
-  transition: opacity 0.3s ease, transform 0.2s ease;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  transition: background-color var(--transition), transform 0.2s ease;
 }
 
 button:hover {
-  opacity: 0.9;
+  background-color: var(--gold-light);
   transform: scale(1.02);
 }
 
-a.whatsapp-btn {
-  display: inline-block;
-  background-color: var(--accent);
-  color: white;
-  padding: 12px 26px;
-  margin-top: 22px;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 0.9rem;
-  transition: opacity 0.3s ease, transform 0.2s ease;
+/* --------------------- MENSAGENS E LINKS --------------------- */
+.mensagem-retorno {
+  margin-top: 1.2em;
+  color: var(--gold-light);
+  font-size: 0.95rem;
+  line-height: 1.5;
 }
 
-a.whatsapp-btn:hover {
-  opacity: 0.85;
-  transform: scale(1.02);
-}
-
-/* ---------- Opt-out, rodapés e links ---------- */
 .optout {
-  margin-top: 16px;
-  font-size: 0.8rem;
-  color: var(--gray);
+  margin-top: 1.6em;
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.6;
+}
+.optout a {
+  color: var(--gold);
+  text-decoration: underline;
+}
+
+/* --------------------- PÁGINAS INTERNAS --------------------- */
+.notice-box {
+  max-width: 600px;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.notice {
+  margin-bottom: 1.6em;
+  line-height: 1.6;
+  color: var(--offwhite);
+}
+
+.notice strong {
+  color: var(--gold-light);
+}
+
+.notice-small {
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.75);
+}
+
+.small {
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.7);
+}
+
+.link-whatsapp,
+.link-voltar {
+  color: var(--gold);
+  text-decoration: underline;
+  display: inline-block;
+  margin-top: 0.5em;
+}
+.link-whatsapp:hover,
+.link-voltar:hover {
+  color: var(--gold-light);
+}
+
+/* --------------------- RODAPÉ --------------------- */
+.footer-credit {
+  font-size: 0.6875em;
+  color: rgba(255,255,255,0.6);
+  text-align: center;
+  margin-top: 40px;
+  padding: 20px 0;
   line-height: 1.4;
 }
-
-.optout a {
-  color: var(--gray);
+.footer-credit a {
+  color: rgba(255,255,255,0.7);
   text-decoration: underline;
-  cursor: pointer;
+}
+.footer-credit a:hover {
+  color: var(--gold);
 }
 
-.optout a:hover {
-  color: var(--gray-light);
-}
-
-.mensagem {
-  margin-top: 36px;
-  font-size: 0.95rem;
-  color: var(--gray-light);
-  white-space: pre-line;
-  max-width: 400px;
-}
-
-/* ---------- Responsividade ---------- */
-@media (max-width: 480px) {
-  body {
-    padding: 30px 14px;
-    font-size: 0.85rem;
+/* --------------------- RESPONSIVIDADE --------------------- */
+@media (max-width: 768px) {
+  .hero {
+    justify-content: center;
+    padding: 10vw;
+    background-position: center top;
   }
-  h1 {
+  .content {
+    text-align: center;
+    padding: 0 2vw;
+  }
+  input, button {
+    max-width: 100%;
+  }
+}
+
+@media (min-width: 1400px) {
+  .title {
+    font-size: 4.5rem;
+  }
+  .subtitle {
     font-size: 1.5rem;
-  }
-  button, a.whatsapp-btn {
-    padding: 10px 20px;
-    font-size: 0.85rem;
-  }
-  input {
-    font-size: 0.85rem;
-    padding: 10px;
   }
 }
