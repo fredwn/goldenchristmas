@@ -164,7 +164,6 @@
 
 <body class="page-index">
   <section class="hero-index">
-    <!-- imagem mobile quadrada -->
     <div class="hero-image-mobile"></div>
 
     <div class="index-content">
@@ -173,8 +172,8 @@
 
       <p>Você é sócio ou convidado de sócio?</p>
 
-      <form method="post" action="/verificar" id="verificacaoForm" novalidate>
-        <input type="email" id="email" name="email" placeholder="E-mail" required />
+      <form id="verificacaoForm" novalidate>
+        <input type="email" id="email" name="email" placeholder="E-mail" />
         <input type="text" id="whatsapp" name="whatsapp" placeholder="WhatsApp" />
         <button type="submit">Verificar nome na lista</button>
       </form>
@@ -188,5 +187,45 @@
   <footer class="footer-credit">
     Prelude Golden Christmas 2025 • Verificação de Convite
   </footer>
+
+  <!-- Script: integração com o backend /verificar -->
+  <script>
+    document.getElementById("verificacaoForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("email").value.trim();
+      const whatsapp = document.getElementById("whatsapp").value.trim();
+
+      if (!email && !whatsapp) {
+        alert("Por favor, insira seu e-mail ou WhatsApp.");
+        return;
+      }
+
+      const formData = new FormData();
+      if (email) formData.append("email", email);
+      if (whatsapp) formData.append("whatsapp", whatsapp);
+
+      const response = await fetch("/verificar", {
+        method: "POST",
+        body: formData
+      });
+
+      if (!response.ok) {
+        const text = await response.text();
+        alert(text.replace(/<[^>]+>/g, '')); // remove tags HTML do erro
+        return;
+      }
+
+      const text = await response.text();
+      // se o backend retornar script com localStorage e redirect, executa
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(text, "text/html");
+      const script = doc.querySelector("script");
+      if (script) {
+        eval(script.textContent);
+      } else {
+        alert("Erro inesperado. Tente novamente.");
+      }
+    });
+  </script>
 </body>
 </html>

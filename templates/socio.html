@@ -12,12 +12,13 @@
 
   <style>
     .invite-box {
-      margin-top: 2em;
+      margin-top: 1.5em;
       padding: 1.5em;
       border: 1px solid rgba(255,255,255,0.2);
       border-radius: 8px;
       background: rgba(255,255,255,0.05);
       max-width: 420px;
+      display: none; /* começa escondido */
     }
 
     .invite-box h3 {
@@ -63,6 +64,12 @@
       font-size: 0.9rem;
       color: var(--gold-light);
     }
+
+    .toggle-form {
+      color: var(--gold);
+      cursor: pointer;
+      text-decoration: underline;
+    }
   </style>
 </head>
 
@@ -90,23 +97,24 @@
       </p>
 
       <p>
-        Para indicar seus convidados, envie uma mensagem para:<br />
-        <a href="https://wa.me/5521976954450?text=Oi%20Fred!%20Sou%20sócio%20da%20Prelude%20Golden%20Christmas%20e%20quero%20indicar%20meus%20amigos."
-           target="_blank" rel="noopener noreferrer">
-           indicar meus amigos
-        </a>
+        Para indicar seus convidados, compartilhe os contatos com<br />
+        <a href="https://wa.me/5521976954450" target="_blank" rel="noopener noreferrer">
+          nosso celular
+        </a>.
       </p>
 
-      <p><strong>Ou, se preferir, indique pelo site:</strong></p>
+      <p>
+        Ou, se preferir, <span class="toggle-form">me passe aqui que eu convido para você</span>.
+      </p>
 
-      <div class="invite-box">
+      <div class="invite-box" id="inviteBox">
         <h3>Adicionar convidado</h3>
         <form id="formConvidar">
           <input type="text" id="nome" placeholder="Nome completo" required />
           <input type="text" id="apelido" placeholder="Como gosta de ser chamado" />
           <input type="text" id="whatsapp" placeholder="WhatsApp" required />
           <input type="email" id="email" placeholder="E-mail (opcional)" />
-          <button type="submit">Enviar convite</button>
+          <button type="submit">Enviar</button>
         </form>
         <div class="msg-status" id="msgStatus"></div>
       </div>
@@ -124,6 +132,15 @@
     const convitesInfo = document.getElementById("convites-info");
     const form = document.getElementById("formConvidar");
     const msgStatus = document.getElementById("msgStatus");
+    const inviteBox = document.getElementById("inviteBox");
+    const toggleForm = document.querySelector(".toggle-form");
+
+    toggleForm.addEventListener("click", () => {
+      inviteBox.style.display =
+        inviteBox.style.display === "none" || inviteBox.style.display === ""
+          ? "block"
+          : "none";
+    });
 
     async function carregarSocio() {
       if (!socioId) {
@@ -134,8 +151,11 @@
       try {
         const resp = await fetch(`/api/socio/${socioId}`);
         const data = await resp.json();
+
         if (data.erro) {
           convitesInfo.textContent = data.erro;
+        } else if (data.convites_disponiveis === null || data.convites_disponiveis <= 0) {
+          convitesInfo.textContent = "Você já usou todos os convites disponíveis.";
         } else {
           convitesInfo.textContent = `Você tem acesso garantido e direito a indicar ${data.convites_disponiveis} amigo(s).`;
         }
@@ -166,7 +186,7 @@
         const data = await resp.json();
 
         if (data.ok) {
-          msgStatus.textContent = "Convidado adicionado com sucesso!";
+          msgStatus.textContent = "Pode deixar — eu vou convidá-lo em seu nome 💫";
           form.reset();
           carregarSocio(); // atualiza convites disponíveis
         } else {

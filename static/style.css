@@ -244,3 +244,30 @@ button:hover {
     font-size: 1.5rem;
   }
 }
+
+/* --------------------- HERO ESPECÍFICO POR PÁGINA --------------------- */
+
+/* Mantém a Leila nas páginas index e restrito */
+body.page-index .hero,
+body.page-restrito .hero {
+  background-image: url("images/leila-desktop.jpeg");
+}
+
+/* Troca a imagem nas páginas socio e convidado */
+body.page-socio .hero,
+body.page-convidado .hero {
+  background-image: url("images/convite-desktop.jpeg");
+}
+
+/* Versões mobile */
+@media (max-width: 768px) {
+  body.page-index .hero,
+  body.page-restrito .hero {
+    background-image: url("images/leila-mobile.jpeg");
+  }
+
+  body.page-socio .hero,
+  body.page-convidado .hero {
+    background-image: url("images/convite-mobile.jpeg");
+  }
+}
