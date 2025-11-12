@@ -226,3 +226,4 @@ async def convidar_amigo(request: Request):
 @app.on_event("startup")
 async def startup_event():
     print("🌟 Servidor Prelude Golden Christmas iniciado com sucesso.")
+# trigger redeploy
