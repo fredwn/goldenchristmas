@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Request, Form
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from supabase import create_client
@@ -85,15 +85,14 @@ async def verificar(
             return HTMLResponse("<h3>Informe seu e-mail ou WhatsApp.</h3>", status_code=400)
 
         data = result.data
+
+        # 🚨 Redireciona para /restrito se não encontrar o registro
         if not data:
-            return HTMLResponse(
-                "<h3>Seu nome não foi encontrado na lista.</h3><p>Entre em contato com a equipe Prelude.</p>",
-                status_code=404
-            )
+            print("⚠️ Nenhum registro encontrado — redirecionando para /restrito")
+            return RedirectResponse(url="/restrito", status_code=303)
 
         pessoa = data[0]
         status = pessoa.get("status", "").lower()
-
         destino = "/socio" if status in ["socio", "sócio"] else "/convidado"
 
         html = f"""
@@ -134,6 +133,20 @@ async def convidado_page(request: Request):
             status_code=500
         )
     return templates.TemplateResponse("convidado.html", {"request": request})
+
+# ==============================================================
+# 🖥️ Página restrita
+# ==============================================================
+
+@app.get("/restrito", response_class=HTMLResponse)
+async def restrito_page(request: Request):
+    html_path = templates_dir / "restrito.html"
+    if not html_path.exists():
+        return HTMLResponse(
+            content=f"<h1>Arquivo não encontrado:</h1><p>{html_path}</p>",
+            status_code=500
+        )
+    return templates.TemplateResponse("restrito.html", {"request": request})
 
 # ==============================================================
 # 📡 Endpoint: buscar dados do sócio
@@ -226,4 +239,3 @@ async def convidar_amigo(request: Request):
 @app.on_event("startup")
 async def startup_event():
     print("🌟 Servidor Prelude Golden Christmas iniciado com sucesso.")
-# trigger redeploy
