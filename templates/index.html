@@ -172,9 +172,10 @@
 
       <p>Você é sócio ou convidado de sócio?</p>
 
-      <form id="verificacaoForm" novalidate>
-        <input type="email" id="email" name="email" placeholder="E-mail" />
-        <input type="text" id="whatsapp" name="whatsapp" placeholder="WhatsApp" />
+      <!-- ✅ formulário direto -->
+      <form action="/verificar" method="post" id="verificacaoForm">
+        <input type="email" name="email" placeholder="E-mail" />
+        <input type="text" name="whatsapp" placeholder="WhatsApp" />
         <button type="submit">Verificar nome na lista</button>
       </form>
 
@@ -188,42 +189,14 @@
     Prelude Golden Christmas 2025 • Verificação de Convite
   </footer>
 
-  <!-- Script: integração com o backend /verificar -->
+  <!-- ✅ Script apenas de validação -->
   <script>
-    document.getElementById("verificacaoForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = document.getElementById("email").value.trim();
-      const whatsapp = document.getElementById("whatsapp").value.trim();
-
+    document.getElementById("verificacaoForm").addEventListener("submit", (e) => {
+      const email = e.target.email.value.trim();
+      const whatsapp = e.target.whatsapp.value.trim();
       if (!email && !whatsapp) {
+        e.preventDefault();
         alert("Por favor, insira seu e-mail ou WhatsApp.");
-        return;
-      }
-
-      const formData = new FormData();
-      if (email) formData.append("email", email);
-      if (whatsapp) formData.append("whatsapp", whatsapp);
-
-      const response = await fetch("/verificar", {
-        method: "POST",
-        body: formData
-      });
-
-      if (!response.ok) {
-        const text = await response.text();
-        alert(text.replace(/<[^>]+>/g, '')); // remove tags HTML do erro
-        return;
-      }
-
-      const text = await response.text();
-      // se o backend retornar script com localStorage e redirect, executa
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(text, "text/html");
-      const script = doc.querySelector("script");
-      if (script) {
-        eval(script.textContent);
-      } else {
-        alert("Erro inesperado. Tente novamente.");
       }
     });
   </script>

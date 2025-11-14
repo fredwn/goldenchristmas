@@ -11,10 +11,6 @@
   <meta name="description" content="Prelude Golden Christmas 2025 — Lista atualmente restrita a convidados." />
 
   <style>
-    /* ===========================
-       HERO LAYOUT — LUXURY VERSION
-    ============================ */
-
     body {
       margin: 0;
       padding: 0;
@@ -33,7 +29,6 @@
       overflow: hidden;
     }
 
-    /* gradiente para contraste do texto */
     .hero-restrito::before {
       content: "";
       position: absolute;
@@ -70,13 +65,12 @@
       color: var(--offwhite);
     }
 
-    .restrito-content strong {
-      color: var(--gold-light);
-    }
+    .restrito-content strong { color: var(--gold-light); }
 
-    .restrito-content a {
+    a {
       color: var(--gold);
       text-decoration: underline;
+      cursor: pointer;
     }
 
     .footer-credit {
@@ -86,36 +80,70 @@
       padding: 10px 0;
     }
 
-    /* ===========================
-       RESPONSIVO (foto quadrada em cima)
-    ============================ */
+    /* ---- Interesse ---- */
+    .interest-box {
+      display: none;
+      margin-top: 1em;
+      padding: 1em;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 8px;
+      background: rgba(255,255,255,0.05);
+      max-width: 420px;
+    }
+
+    .interest-box h3 {
+      margin-top: 0;
+      color: var(--gold-light);
+      font-size: 1.1rem;
+    }
+
+    input {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 4px;
+      border: 1px solid rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.08);
+      color: var(--white);
+    }
+
+    button {
+      background-color: var(--gold);
+      color: #111;
+      border: none;
+      padding: 12px 0;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    button:hover {
+      background-color: var(--gold-light);
+      transform: scale(1.02);
+    }
+
     @media (max-width: 820px) {
       .hero-restrito {
         flex-direction: column;
-        justify-content: flex-start;
         height: auto;
         background: none;
       }
-
-      .hero-restrito::before {
-        display: none;
-      }
-
+      .hero-restrito::before { display: none; }
       .hero-image-mobile {
         width: 100%;
         aspect-ratio: 1 / 1;
         background: url("/static/images/leila-mobile.jpeg") center center / cover no-repeat;
-        order: -1; /* coloca a imagem em cima */
+        order: -1;
       }
-
       .restrito-content {
         padding: 8vw 6vw;
         text-align: center;
         background-color: #000;
       }
-
-      .restrito-content h1, .restrito-content h2 {
-        text-align: center;
+      .interest-box {
+        margin-left: auto;
+        margin-right: auto;
       }
     }
   </style>
@@ -123,7 +151,6 @@
 
 <body class="page-restrito">
   <section class="hero-restrito">
-    <!-- imagem mobile quadrada -->
     <div class="hero-image-mobile"></div>
 
     <div class="restrito-content">
@@ -137,23 +164,100 @@
 
       <p>
         Muitas pessoas que fizeram parte dessa história mudaram de contato.<br />
-        Você pode apagar os seus dados (e-mail e WhatsApp), mas deixá-los registrados
-        nos permitirá incluí-lo em futuras edições.
+        Você pode apagar os seus dados agora ou registrar interesse em futuras edições.
       </p>
 
       <p>
-        <a href="/optout">Remover meus dados agora</a><br />
+        <a id="removerDados">Remover meus dados agora</a><br />
+        <a id="mostrarInteresse">Avisar interesse em ir</a><br />
         <a href="/" class="link-voltar">Verificar outro nome</a>
       </p>
 
-      <p style="font-size:0.9rem;opacity:0.8;">
-        Muito obrigado!
-      </p>
+      <div class="interest-box" id="interestBox">
+        <h3>Quero ser lembrado</h3>
+        <form id="interestForm">
+          <input type="text" id="nome" placeholder="Nome completo" required>
+          <input type="text" id="apelido" placeholder="Como gosta de ser chamado (opcional)">
+          <button type="submit">Enviar interesse</button>
+        </form>
+        <p id="msg" style="margin-top:0.8em;color:var(--gold-light);"></p>
+      </div>
+
+      <p style="font-size:0.9rem;opacity:0.8;">Muito obrigado!</p>
     </div>
   </section>
 
   <footer class="footer-credit">
     Prelude Golden Christmas 2025 • Lista Restrita
   </footer>
+
+  <script>
+    // ==========================================
+    // 🔐 Recupera ID salvo no localStorage
+    // ==========================================
+    const pessoaId = localStorage.getItem("socio_id");
+
+    if (!pessoaId) {
+      alert("Por favor, verifique seu e-mail ou WhatsApp antes de continuar.");
+      window.location.href = "/";
+    }
+
+    const removerBtn = document.getElementById("removerDados");
+    const interesseBtn = document.getElementById("mostrarInteresse");
+    const interestBox = document.getElementById("interestBox");
+    const msg = document.getElementById("msg");
+
+    // ==========================================
+    // ❌ REMOVER DADOS
+    // now calls /optout?id=...
+    // ==========================================
+    removerBtn.addEventListener("click", async () => {
+      try {
+        const resp = await fetch(`/optout?id=${pessoaId}`);
+        const html = await resp.text();
+        document.open();
+        document.write(html);
+        document.close();
+      } catch {
+        alert("Erro ao remover seus dados. Tente novamente.");
+      }
+    });
+
+    // ==========================================
+    // 📩 ABRIR/FECHAR FORM DE INTERESSE
+    // ==========================================
+    interesseBtn.addEventListener("click", () => {
+      interestBox.style.display =
+        interestBox.style.display === "block" ? "none" : "block";
+    });
+
+    // ==========================================
+    // ✳️ ENVIAR INTERESSE — atualiza o MESMO ID
+    // ==========================================
+    document.getElementById("interestForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const payload = {
+        id: pessoaId,
+        nome: document.getElementById("nome").value,
+        apelido: document.getElementById("apelido").value
+      };
+
+      try {
+        const resp = await fetch("/api/interesse", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await resp.json();
+        msg.textContent = data.mensagem || "Interesse registrado com sucesso";
+
+        e.target.reset();
+      } catch {
+        msg.textContent = "Erro ao enviar interesse.";
+      }
+    });
+  </script>
 </body>
 </html>

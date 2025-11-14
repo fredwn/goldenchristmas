@@ -11,6 +11,9 @@
   <meta name="description" content="Prelude Golden Christmas 2025 — acesso exclusivo para sócios." />
 
   <style>
+    /* ==============================
+       Caixa de convites
+    ============================== */
     .invite-box {
       margin-top: 1.5em;
       padding: 1.5em;
@@ -70,11 +73,59 @@
       cursor: pointer;
       text-decoration: underline;
     }
+
+    /* ==============================
+       MOBILE FIX — igual à index
+    ============================== */
+    @media (max-width: 820px) {
+      body.page-socio .hero {
+        flex-direction: column;
+        justify-content: flex-start;
+        height: auto;
+        background: none;
+      }
+
+      body.page-socio .hero::before {
+        display: none;
+      }
+
+      /* imagem no topo (como na index) */
+      .hero-image-mobile {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        background: url("/static/images/convite-mobile.jpeg") center center / cover no-repeat;
+        order: -1;
+      }
+
+      body.page-socio .content {
+        padding: 8vw 6vw;
+        text-align: center;
+        background-color: #000;
+      }
+
+      body.page-socio .content h1,
+      body.page-socio .content h2 {
+        text-align: center;
+      }
+
+      body.page-socio input,
+      body.page-socio button {
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      body.page-socio .invite-box {
+        max-width: 100%;
+      }
+    }
   </style>
 </head>
 
 <body class="page-socio">
   <section class="hero">
+    <!-- ✅ imagem separada, usada apenas no mobile -->
+    <div class="hero-image-mobile"></div>
+
     <div class="content">
       <h1 class="title">Prelude</h1>
       <h2 class="subtitle">Golden Christmas 2025</h2>
@@ -96,7 +147,6 @@
         Todas as confirmações serão feitas por esse canal.
       </p>
 
-      <!-- ✅ Texto atualizado -->
       <p>
         Para indicar seus convidados, <span class="toggle-form">me passe aqui que eu convido para você</span>.
       </p>

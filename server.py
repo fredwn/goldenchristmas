@@ -11,8 +11,9 @@ import os
 # 🚀 Inicialização e leitura do .env
 # ==============================================================
 
-env_path = Path(__file__).resolve().parent / ".env"
-print("🧠 Carregando variáveis de ambiente...")
+base_dir = Path(__file__).resolve().parent
+env_path = base_dir / ".env"
+print("🧠 Carregando variáveis de ambiente...", env_path)
 load_dotenv(dotenv_path=env_path)
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
@@ -20,7 +21,7 @@ SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
 print("✅ .env encontrado:", env_path.exists())
 print("🔗 SUPABASE_URL =", SUPABASE_URL)
-print("🔑 SUPABASE_KEY =", SUPABASE_KEY[:8] + "..." if SUPABASE_KEY else None)
+print("🔑 SUPABASE_KEY =", (SUPABASE_KEY[:8] + "...") if SUPABASE_KEY else None)
 
 # ==============================================================
 # ⚙️ Conexão com o Supabase
@@ -42,10 +43,27 @@ else:
 
 app = FastAPI(title="Prelude Golden Christmas 2025 — Sistema de Convites")
 
-# Arquivos estáticos e templates
-app.mount("/static", StaticFiles(directory="static"), name="static")
-templates_dir = Path(__file__).resolve().parent / "templates"
-templates = Jinja2Templates(directory=str(templates_dir))
+templates_dir = base_dir / "templates"
+static_dir = base_dir / "static"
+print("📂 templates_dir:", templates_dir.resolve())
+print("📂 static_dir   :", static_dir.resolve())
+
+try:
+    app.mount("/static", StaticFiles(directory=str(static_dir), check_dir=False), name="static")
+    if not static_dir.exists():
+        print("⚠️ AVISO: pasta 'static/' não encontrada. O app sobe mesmo assim; arquivos estáticos retornarão 404.")
+except Exception as e:
+    print("🚨 Falha ao montar /static:", e)
+
+templates = Jinja2Templates(directory=str(templates_dir.resolve()))
+
+# ==============================================================
+# 🏥 Health-check rápido
+# ==============================================================
+
+@app.get("/health", response_class=HTMLResponse)
+async def health():
+    return HTMLResponse("ok")
 
 # ==============================================================
 # 🏠 Página inicial (index)
@@ -77,6 +95,7 @@ async def verificar(
     query = supabase.table("cadastros")
 
     try:
+        # Busca o registro existente
         if email:
             result = query.select("*").ilike("email", f"%{email}%").execute()
         elif whatsapp:
@@ -86,11 +105,32 @@ async def verificar(
 
         data = result.data
 
-        # 🚨 Redireciona para /restrito se não encontrar o registro
+        # 🚨 Se não existir: grava e salva ID no localStorage
         if not data:
-            print("⚠️ Nenhum registro encontrado — redirecionando para /restrito")
-            return RedirectResponse(url="/restrito", status_code=303)
+            print("⚠️ Nenhum registro encontrado — criando novo")
 
+            novo = {
+                "email": email,
+                "whatsapp": whatsapp,
+                "status": "aguardando",
+                "convites_disponiveis": 0
+            }
+
+            insert_resp = query.insert(novo).execute()
+            pessoa = insert_resp.data[0]
+            pessoa_id = pessoa["id"]
+
+            html = f"""
+            <script>
+              localStorage.setItem("socio_id", "{pessoa_id}");
+              localStorage.setItem("email", "{email or ''}");
+              localStorage.setItem("whatsapp", "{whatsapp or ''}");
+              window.location.href = "/restrito";
+            </script>
+            """
+            return HTMLResponse(html)
+
+        # Registro existe — redireciona com dados carregados
         pessoa = data[0]
         status = pessoa.get("status", "").lower()
         destino = "/socio" if status in ["socio", "sócio"] else "/convidado"
@@ -98,12 +138,15 @@ async def verificar(
         html = f"""
         <script>
           localStorage.setItem("socio_id", "{pessoa['id']}");
+          localStorage.setItem("email", "{pessoa.get('email','')}");
+          localStorage.setItem("whatsapp", "{pessoa.get('whatsapp','')}");
           window.location.href = "{destino}";
         </script>
         """
         return HTMLResponse(content=html)
 
     except Exception as e:
+        print("🚨 Erro interno no /verificar:", repr(e))
         return HTMLResponse(f"<h3>Erro interno:</h3><pre>{e}</pre>", status_code=500)
 
 # ==============================================================
@@ -141,12 +184,17 @@ async def convidado_page(request: Request):
 @app.get("/restrito", response_class=HTMLResponse)
 async def restrito_page(request: Request):
     html_path = templates_dir / "restrito.html"
+    print("🔎 GET /restrito ->", html_path.resolve(), "existe?", html_path.exists())
     if not html_path.exists():
         return HTMLResponse(
             content=f"<h1>Arquivo não encontrado:</h1><p>{html_path}</p>",
             status_code=500
         )
-    return templates.TemplateResponse("restrito.html", {"request": request})
+    try:
+        return templates.TemplateResponse("restrito.html", {"request": request})
+    except Exception as e:
+        print("🚨 Erro ao renderizar restrito.html:", repr(e))
+        return HTMLResponse(f"<h3>Erro ao renderizar restrito.html:</h3><pre>{e}</pre>", status_code=500)
 
 # ==============================================================
 # 📡 Endpoint: buscar dados do sócio
@@ -178,7 +226,6 @@ async def convidar_amigo(request: Request):
     socio_id = data.get("quem_indicou")
 
     try:
-        # 1️⃣ Buscar sócio
         socio_resp = supabase.table("cadastros").select("id, convites_disponiveis").eq("id", socio_id).single().execute()
         socio = socio_resp.data
         print("🎯 Sócio encontrado:", socio)
@@ -190,7 +237,6 @@ async def convidar_amigo(request: Request):
         if convites_restantes <= 0:
             return JSONResponse({"erro": "Você já usou todos os convites disponíveis."}, status_code=400)
 
-        # 2️⃣ Inserir convidado
         convidado = {
             "nome": data.get("nome"),
             "apelido": data.get("apelido"),
@@ -203,34 +249,76 @@ async def convidar_amigo(request: Request):
         insert_resp = supabase.table("cadastros").insert(convidado).execute()
         print("✅ Convidado adicionado:", insert_resp.data)
 
-        # 3️⃣ Atualizar convites disponíveis (com fallback)
         novo_total = convites_restantes - 1
-        update_resp = supabase.table("cadastros") \
-            .update({"convites_disponiveis": novo_total}) \
-            .eq("id", socio_id).execute()
+        update_resp = supabase.table("cadastros").update({"convites_disponiveis": novo_total}).eq("id", socio_id).execute()
         print("📉 Resultado do update:", update_resp)
-
-        # 4️⃣ Rechecar valor após o update
-        check_resp = supabase.table("cadastros").select("convites_disponiveis").eq("id", socio_id).single().execute()
-        novo_valor = int(check_resp.data.get("convites_disponiveis", convites_restantes))
-        print("🔎 Valor após update:", novo_valor)
-
-        # 5️⃣ Fallback de segurança (update forçado)
-        if novo_valor == convites_restantes:
-            print("⚠️ Fallback acionado — tentando update forçado")
-            supabase.table("cadastros").update({"convites_disponiveis": convites_restantes - 1}).eq("id", socio_id).execute()
-            check_resp = supabase.table("cadastros").select("convites_disponiveis").eq("id", socio_id).single().execute()
-            novo_valor = int(check_resp.data.get("convites_disponiveis", convites_restantes))
 
         return JSONResponse({
             "ok": True,
-            "mensagem": f"Convite registrado. Convites restantes: {novo_valor}",
-            "convites_restantes": novo_valor
+            "mensagem": f"Convite registrado.",
+            "convites_restantes": novo_total
         })
 
     except Exception as e:
         print("🚨 Erro geral no convite:", e)
         return JSONResponse({"erro": f"Erro ao salvar convidado: {str(e)}"}, status_code=500)
+
+# ==============================================================
+# ❌ Opt-out: remove pelo ID
+# ==============================================================
+
+@app.get("/optout", response_class=HTMLResponse)
+async def optout(request: Request, id: int = None):
+    if not supabase:
+        return HTMLResponse("<h3>Serviço Supabase indisponível.</h3>", status_code=503)
+
+    if not id:
+        return HTMLResponse("<h3>ID não encontrado. Volte e tente novamente.</h3>", status_code=400)
+
+    try:
+        supabase.table("cadastros").delete().eq("id", id).execute()
+
+        html = """
+        <script>
+          localStorage.removeItem('socio_id');
+          localStorage.removeItem('email');
+          localStorage.removeItem('whatsapp');
+          alert('Seus dados foram removidos com sucesso.');
+          window.location.href = "/";
+        </script>
+        """
+        return HTMLResponse(html)
+
+    except Exception as e:
+        print("🚨 Erro ao excluir dados:", e)
+        return HTMLResponse(f"<h3>Erro ao excluir dados:</h3><pre>{e}</pre>", status_code=500)
+
+# ==============================================================
+# ✳️ Registrar interesse futuro — atualiza o mesmo ID
+# ==============================================================
+
+@app.post("/api/interesse")
+async def registrar_interesse(request: Request):
+    if not supabase:
+        return JSONResponse({"erro": "Serviço Supabase indisponível."}, status_code=503)
+
+    data = await request.json()
+    pessoa_id = data.get("id")
+
+    if not pessoa_id:
+        return JSONResponse({"erro": "ID não enviado"}, status_code=400)
+
+    try:
+        supabase.table("cadastros").update({
+            "nome": data.get("nome"),
+            "apelido": data.get("apelido"),
+            "status": "interessado"
+        }).eq("id", pessoa_id).execute()
+
+        return JSONResponse({"mensagem": "Seu interesse foi registrado com sucesso"})
+    except Exception as e:
+        print("🚨 Erro ao registrar interesse:", e)
+        return JSONResponse({"erro": str(e)}, status_code=500)
 
 # ==============================================================
 # ✅ Mensagem de inicialização

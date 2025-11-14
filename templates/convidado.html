@@ -11,7 +11,9 @@
   <meta name="description" content="Prelude Golden Christmas 2025 — Confirmação de presença como convidado." />
 
   <style>
-    /* Ajustes específicos da página de convidado */
+    /* ==============================
+       Ajustes específicos da página Convidado
+    ============================== */
     .hero {
       justify-content: flex-start;
       padding-left: 10vw;
@@ -32,14 +34,37 @@
       color: var(--gold-light);
     }
 
-    @media (max-width: 768px) {
-      .hero {
-        justify-content: center;
-        padding: 10vw 6vw;
-        text-align: center;
+    /* ==============================
+       MOBILE FIX — mesmo padrão da index
+    ============================== */
+    @media (max-width: 820px) {
+      body.page-convidado .hero {
+        flex-direction: column;
+        justify-content: flex-start;
+        height: auto;
+        background: none;
       }
 
-      .content {
+      body.page-convidado .hero::before {
+        display: none;
+      }
+
+      /* imagem separada no topo */
+      .hero-image-mobile {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        background: url("/static/images/convite-mobile.jpeg") center center / cover no-repeat;
+        order: -1;
+      }
+
+      body.page-convidado .content {
+        padding: 8vw 6vw;
+        text-align: center;
+        background-color: #000;
+      }
+
+      body.page-convidado .content h1,
+      body.page-convidado .content h2 {
         text-align: center;
       }
     }
@@ -48,6 +73,9 @@
 
 <body class="page-convidado">
   <section class="hero">
+    <!-- ✅ imagem separada, usada apenas no mobile -->
+    <div class="hero-image-mobile"></div>
+
     <div class="content">
       <h1 class="title">Prelude</h1>
       <h2 class="subtitle">Golden Christmas 2025</h2>
